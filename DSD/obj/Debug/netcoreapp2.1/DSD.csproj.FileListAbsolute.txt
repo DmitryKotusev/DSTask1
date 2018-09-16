@@ -1,0 +1,14 @@
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\bin\Debug\netcoreapp2.1\DSD.deps.json
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\bin\Debug\netcoreapp2.1\DSD.runtimeconfig.json
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\bin\Debug\netcoreapp2.1\DSD.runtimeconfig.dev.json
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\bin\Debug\netcoreapp2.1\DSD.dll
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\bin\Debug\netcoreapp2.1\DSD.pdb
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.csproj.CoreCompileInputs.cache
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.RazorAssemblyInfo.cache
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.RazorAssemblyInfo.cs
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.AssemblyInfoInputs.cache
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.AssemblyInfo.cs
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.RazorTargetAssemblyInfo.cache
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.dll
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.pdb
+C:\Users\Дмитрий\Documents\Visual Studio 2017\Projects\DSD\DSD\obj\Debug\netcoreapp2.1\DSD.csprojAssemblyReference.cache
