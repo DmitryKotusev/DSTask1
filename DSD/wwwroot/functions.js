@@ -25,15 +25,70 @@ var isAdded = false;
         </th>`
     }
 
-    function makeRecoverZone(number) {
+    function makeTr(obj, table, number) {
+        let newTr = table.insertRow(number);
+        newTr.id = obj.playerid;
+        newTr.innerHTML =
+            `<th class="text-left">
+            <div contenteditable="false">${obj.playerid}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.jersey ? obj.jersey : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.fname ? obj.fname : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.sname ? obj.sname : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.position ? obj.position : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.birthday ? obj.birthday.toLocaleDateString() : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.weight ? obj.weight : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.height ? obj.height : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.birthcity ? obj.birthcity : ''}</div>
+        </th>
+        <th class="text-left">
+            <div contenteditable="false">${obj.birthstate ? obj.birthstate : ''}</div>
+        </th>
+        <th class="text-center">
+            <button type="button" class="buttonEditClass">
+                <img src="edit_write_icon.png" class="iconClass">
+            </button>
+        </th>
+        <th class="text-center">
+            <button type="button" class="buttonDeleteClass">
+                <img src="delete_write_icon.png" class="iconClass">
+            </button>
+        </th>`
+    }
+
+    function deleteTr(number) {
+        document.getElementsByClassName('table-fill')[0].deleteRow(number);
+    }
+
+    function makeRecoverZone(number, id) {
         let table = document.getElementsByClassName('table-fill')[0];
-        let applyZone = table.insertRow(number);
-        applyZone.innerHTML =
+        let recoverZone = table.insertRow(number);
+        recoverZone.id = id;
+        recoverZone.innerHTML =
             `<th colspan=12 class="app">
             <div class="applyAddEdit">
-                <button class="buttonRecoverClass">Back</button>
+                <button class="buttonRecoverClass">Recover</button>
             </div>
         </th>`
+    }
+
+    function deleteRecoverZone(number) {
+        document.getElementsByClassName('table-fill')[0].deleteRow(number);
     }
 
     function deleteApplyAddZone(number) {
@@ -108,9 +163,11 @@ var isAdded = false;
 
             if (event.target.className === 'buttonDeleteClass') {
                 alert('delete');
+                deleteEventFunc(event.target.closest('tr'));
                 return;
             } else if (event.target.closest('.buttonDeleteClass') !== null) {
                 alert('delete');
+                deleteEventFunc(event.target.closest('tr'));
                 return;
             }
 
@@ -133,12 +190,12 @@ var isAdded = false;
             }
 
             if (event.target.className === 'buttonRecoverClass') {
-                alert('applyAdd');
-
+                alert('recover');
+                recoverEventFunc(event.target.closest('tr'));
                 return;
             } else if (event.target.closest('.buttonRecoverClass') !== null) {
-                alert('applyAdd');
-
+                alert('recover');
+                recoverEventFunc(event.target.closest('tr'));
                 return;
             }
         }
@@ -188,7 +245,40 @@ var isAdded = false;
     }
 
     function deleteEventFunc(tr) {
-        // Дописать
+        let rowIndex = tr.rowIndex;
+        let id = tr.id;
+        deleteTr(rowIndex);
+        makeRecoverZone(rowIndex, id);
+        toDelete.push(
+            {
+                playerid: tr.id,
+            }
+        );
+    }
+
+    function recoverEventFunc(tr) {
+        let rowIndex = tr.rowIndex;
+        deleteRecoverZone(rowIndex);
+        let deletedObj = toDelete.find(
+            (element) => {
+                return element.playerid === tr.id;
+            }
+        );
+        toDelete.splice(toDelete.indexOf(deletedObj), 1);
+        let obj = data.find(
+            (element) => {
+                return element.playerid === deletedObj.playerid;
+            }
+        );
+        if (!obj) {
+            obj = toAdd.find(
+                (element) => {
+                    return element.playerid === deletedObj.playerid;
+                }
+            );
+        }
+        let table = document.getElementsByClassName('table-fill')[0];
+        makeTr(obj, table, rowIndex);
     }
 
     function addEventFunc() {
@@ -287,15 +377,15 @@ var isAdded = false;
                 );
             } else {
                 elemToEdit.playerid = divs[0].textContent,
-                elemToEdit.jersey = parseInt(divs[1].textContent, 10),
-                elemToEdit.fname = divs[2].textContent,
-                elemToEdit.sname = divs[3].textContent,
-                elemToEdit.position = divs[4].textContent,
-                elemToEdit.birthday = makeDate(divs[5].textContent),
-                elemToEdit.weight = parseInt(divs[6].textContent, 10),
-                elemToEdit.height = parseInt(divs[7].textContent, 10),
-                elemToEdit.birthcity = divs[8].textContent,
-                elemToEdit.birthstate = divs[9].textContent
+                    elemToEdit.jersey = parseInt(divs[1].textContent, 10),
+                    elemToEdit.fname = divs[2].textContent,
+                    elemToEdit.sname = divs[3].textContent,
+                    elemToEdit.position = divs[4].textContent,
+                    elemToEdit.birthday = makeDate(divs[5].textContent),
+                    elemToEdit.weight = parseInt(divs[6].textContent, 10),
+                    elemToEdit.height = parseInt(divs[7].textContent, 10),
+                    elemToEdit.birthcity = divs[8].textContent,
+                    elemToEdit.birthstate = divs[9].textContent
             }
             // Тут было приравнивание id
             makeNonEditable(tr.previousElementSibling);
@@ -318,15 +408,15 @@ var isAdded = false;
             toAdd.push(
                 {
                     playerid: divs[0].textContent,
-                    jersey: parseInt(divs[1].textContent, 10),
-                    fname: divs[2].textContent,
-                    sname: divs[3].textContent,
-                    position: divs[4].textContent,
-                    birthday: makeDate(divs[5].textContent),
-                    weight: parseInt(divs[6].textContent, 10),
-                    height: parseInt(divs[7].textContent, 10),
-                    birthcity: divs[8].textContent,
-                    birthstate: divs[9].textContent
+                    jersey: divs[1].textContent ? parseInt(divs[1].textContent, 10) : null,
+                    fname: divs[2].textContent ? divs[2].textContent : null,
+                    sname: divs[3].textContent ? divs[3].textContent : null,
+                    position: divs[4].textContent ? divs[4].textContent : null,
+                    birthday: divs[5].textContent ? makeDate(divs[5].textContent) : null,
+                    weight: divs[6].textContent ? parseInt(divs[6].textContent, 10) : null,
+                    height: divs[7].textContent ? parseInt(divs[7].textContent, 10) : null,
+                    birthcity: divs[8].textContent ? divs[8].textContent : null,
+                    birthstate: divs[9].textContent ? divs[9].textContent : null
                 }
             );
             makeNonEditable(tr.previousElementSibling);
@@ -393,4 +483,5 @@ var isAdded = false;
     window.makeApplyAddZone = makeApplyAddZone;
     window.applyEditing = applyEditing;
     window.cancelAdd = cancelAdd;
+    window.makeTr = makeTr;
 })();
