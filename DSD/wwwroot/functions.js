@@ -235,6 +235,11 @@ var isAdded = false;
         }
     }
 
+    function applyAllEventFunc() {
+        synchroniseArrays();
+        // Отправка запроса на сервер
+    }
+
     function editEventFunc(tr) {
         isEdited = true;
         disableAllButtons();
@@ -364,28 +369,28 @@ var isAdded = false;
                     {
                         oldId: tr.previousElementSibling.id,
                         playerid: divs[0].textContent,
-                        jersey: parseInt(divs[1].textContent, 10),
-                        fname: divs[2].textContent,
-                        sname: divs[3].textContent,
-                        position: divs[4].textContent,
-                        birthday: makeDate(divs[5].textContent),
-                        weight: parseInt(divs[6].textContent, 10),
-                        height: parseInt(divs[7].textContent, 10),
-                        birthcity: divs[8].textContent,
-                        birthstate: divs[9].textContent
+                        jersey: divs[1].textContent ? parseInt(divs[1].textContent, 10) : null,
+                        fname: divs[2].textContent ? divs[2].textContent : null,
+                        sname: divs[3].textContent ? divs[3].textContent : null,
+                        position: divs[4].textContent ? divs[4].textContent : null,
+                        birthday: divs[5].textContent ? makeDate(divs[5].textContent) : null,
+                        weight: divs[6].textContent ? parseInt(divs[6].textContent, 10) : null,
+                        height: divs[7].textContent ? parseInt(divs[7].textContent, 10) : null,
+                        birthcity: divs[8].textContent ? divs[8].textContent : null,
+                        birthstate: divs[9].textContent ? divs[9].textContent : null
                     }
                 );
             } else {
                 elemToEdit.playerid = divs[0].textContent,
-                    elemToEdit.jersey = parseInt(divs[1].textContent, 10),
-                    elemToEdit.fname = divs[2].textContent,
-                    elemToEdit.sname = divs[3].textContent,
-                    elemToEdit.position = divs[4].textContent,
-                    elemToEdit.birthday = makeDate(divs[5].textContent),
-                    elemToEdit.weight = parseInt(divs[6].textContent, 10),
-                    elemToEdit.height = parseInt(divs[7].textContent, 10),
-                    elemToEdit.birthcity = divs[8].textContent,
-                    elemToEdit.birthstate = divs[9].textContent
+                    jersey = divs[1].textContent ? parseInt(divs[1].textContent, 10) : null,
+                    fname = divs[2].textContent ? divs[2].textContent : null,
+                    sname = divs[3].textContent ? divs[3].textContent : null,
+                    position = divs[4].textContent ? divs[4].textContent : null,
+                    birthday = divs[5].textContent ? makeDate(divs[5].textContent) : null,
+                    weight = divs[6].textContent ? parseInt(divs[6].textContent, 10) : null,
+                    height = divs[7].textContent ? parseInt(divs[7].textContent, 10) : null,
+                    birthcity = divs[8].textContent ? divs[8].textContent : null,
+                    birthstate = divs[9].textContent ? divs[9].textContent : null
             }
             // Тут было приравнивание id
             makeNonEditable(tr.previousElementSibling);
@@ -470,6 +475,56 @@ var isAdded = false;
         enableAllButtons();
     }
 
+    function synchroniseArrays() {
+        let nothingToDelete = [];
+        // Обработка массивов toEdit и toAdd
+        toDelete.forEach(deletedElement => {
+            let deletedElInToEdit = toEdit.find(
+                (element) => {
+                    return element.oldId === deletedElement.playerid
+            });
+            if (deletedElInToEdit) {
+                toEdit.splice(toEdit.indexOf(deletedElInToEdit), 1);
+            }
+
+            let deletedElInToAdd = toAdd.find(
+                (element) => {
+                    return element.playerid === deletedElement.playerid
+            });
+            if (deletedElInToAdd) {
+                toAdd.splice(toAdd.indexOf(deletedElInToAdd), 1);
+                // В этом случае ужадение ещё не добавленного элемента бессмысленно
+                // Заносим их в массив кандидатов на последующее удаление
+                nothingToDelete.push(deletedElement);
+            }
+        });
+        // Удаление из массива toDelete неактульных элементов
+        nothingToDelete.forEach(element => {
+            toDelete.splice(toDelete.indexOf(element), 1);
+        });
+
+        // Обработка массива toAdd
+        toAdd.forEach(addedElement => {
+            let editedElInToAdd = toEdit.find(
+                (element) => {
+                    return element.oldId === addedElement.playerid;
+            });
+            if (editedElInToAdd) {
+                addedElement.playerid = editedElInToAdd.playerid;
+                addedElement.jersey = editedElInToAdd.jersey;
+                addedElement.fname = editedElInToAdd.fname;
+                addedElement.sname = editedElInToAdd.sname;
+                addedElement.position = editedElInToAdd.position;
+                addedElement.birthday = editedElInToAdd.birthday;
+                addedElement.weight = editedElInToAdd.weight;
+                addedElement.height = editedElInToAdd.height;
+                addedElement.birthcity = editedElInToAdd.birthcity;
+                addedElement.birthstate = editedElInToAdd.birthstate;
+                
+                toEdit.splice(toEdit.indexOf(editedElInToAdd), 1);
+            }
+        });
+    }
 
 
     window.makeApplyZone = makeApplyZone;
@@ -484,4 +539,5 @@ var isAdded = false;
     window.applyEditing = applyEditing;
     window.cancelAdd = cancelAdd;
     window.makeTr = makeTr;
+    window.synchroniseArrays = synchroniseArrays;
 })();
