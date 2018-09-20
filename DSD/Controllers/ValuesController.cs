@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using DSD.Models;
 
 namespace DSD.Controllers
 {
@@ -13,41 +14,13 @@ namespace DSD.Controllers
     [ApiController]
     public class DataController : ControllerBase
     {
-        class roster
-        {
-            public string playerid;
-            public object jersey;
-            public string fname;
-            public string sname;
-            public string position;
-            public object birthday;
-            public object weight;
-            public object heignt;
-            public string birthcity;
-            public string birthstate;
-
-            public roster(string playerid, object jersey, string fname, string sname, string position,
-                object birthday, object weight, object heignt, string birthcity, string birthstate)
-            {
-                this.playerid = playerid;
-                this.jersey = jersey;
-                this.fname = fname;
-                this.sname = sname;
-                this.position = position;
-                this.birthday = birthday;
-                this.weight = weight;
-                this.heignt = heignt;
-                this.birthcity = birthcity;
-                this.birthstate = birthstate;
-            }
-        }
         // GET api/data
         [HttpGet]
-        public JsonResult Get()
+        public IEnumerable<Roster> Get()
         {
-            List<roster> critters = new List<roster>();
+            List<Roster> critters = new List<Roster>();
             // return new string[] { "value1", "value2" };
-            using (SqlConnection connection = new SqlConnection("Server=localhost\\DESKTOP-SKN9RR2;Database=CRITTERS;Trusted_Connection=True;"))
+            using (SqlConnection connection = new SqlConnection("Server=DESKTOP-SKN9RR2;Database=CRITTERS;Trusted_Connection=True;"))
             {
                 SqlCommand com = new SqlCommand("Select * from roster", connection);
                 connection.Open();
@@ -90,18 +63,19 @@ namespace DSD.Controllers
                         height = reader.GetInt32(7);
                     }
                     critters.Add(
-                        new roster(
-                            reader.GetString(0),
-                            jersey,
-                            reader.GetString(2),
-                            reader.GetString(3),
-                            reader.GetString(4),
-                            birthday,
-                            weight,
-                            height,
-                            reader.GetString(8),
-                            reader.GetString(9)
-                            )
+                        new Roster
+                        {
+                            playerid = reader.GetString(0),
+                            jersey = jersey,
+                            fname = reader.GetString(2),
+                            sname = reader.GetString(3),
+                            position = reader.GetString(4),
+                            birthday = birthday,
+                            weight = weight,
+                            height = height,
+                            birthcity = reader.GetString(8),
+                            birthstate = reader.GetString(9)
+                        }
                         );
                 }
             }
