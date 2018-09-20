@@ -7,6 +7,7 @@ using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using DSD.Models;
+using Newtonsoft.Json;
 
 namespace DSD.Controllers
 {
@@ -82,29 +83,13 @@ namespace DSD.Controllers
             return critters.ToArray();
         }
 
-        // GET api/data/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
+        // POST api/data
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post()
         {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            ToAddItem[] toAdd = JsonConvert.DeserializeObject<ToAddItem[]>(Request.Form["toAdd"]);
+            ToEditItem[] toEdit = JsonConvert.DeserializeObject<ToEditItem[]>(Request.Form["toEdit"]);
+            ToDeleteItem[] toDelete = JsonConvert.DeserializeObject<ToDeleteItem[]>(Request.Form["toDelete"]);
         }
     }
 }

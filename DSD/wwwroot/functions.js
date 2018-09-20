@@ -1,5 +1,9 @@
 var isEdited = false;
 var isAdded = false;
+var toEdit = [];
+var toAdd = [];
+var toDelete = [];
+var data = [];
 
 (function () {
     function makeApplyZone(number) {
@@ -152,49 +156,51 @@ var isAdded = false;
     function globalListenerFunction(event) {
         if (!isEdited && !isAdded) {
             if (event.target.className === 'buttonEditClass') {
-                alert('edit');
+                // alert('edit');
                 editEventFunc(event.target.closest('tr'));
                 return;
             } else if (event.target.closest('.buttonEditClass') !== null) {
-                alert('edit');
+                // alert('edit');
                 editEventFunc(event.target.closest('tr'));
                 return;
             }
 
             if (event.target.className === 'buttonDeleteClass') {
-                alert('delete');
+                // alert('delete');
                 deleteEventFunc(event.target.closest('tr'));
                 return;
             } else if (event.target.closest('.buttonDeleteClass') !== null) {
-                alert('delete');
+                // alert('delete');
                 deleteEventFunc(event.target.closest('tr'));
                 return;
             }
 
             if (event.target.className === 'buttonApplyAllClass') {
-                alert('applyAll');
+                // alert('applyAll');
+                applyAllEventFunc();
                 return;
             } else if (event.target.closest('.buttonApplyAllClass') !== null) {
-                alert('applyAll');
+                // alert('applyAll');
+                applyAllEventFunc();
                 return;
             }
 
             if (event.target.className === 'buttonAddClass') {
-                alert('add');
+                // alert('add');
                 addEventFunc();
                 return;
             } else if (event.target.closest('.buttonAddClass') !== null) {
-                alert('add');
+                // alert('add');
                 addEventFunc();
                 return;
             }
 
             if (event.target.className === 'buttonRecoverClass') {
-                alert('recover');
+                // alert('recover');
                 recoverEventFunc(event.target.closest('tr'));
                 return;
             } else if (event.target.closest('.buttonRecoverClass') !== null) {
-                alert('recover');
+                // alert('recover');
                 recoverEventFunc(event.target.closest('tr'));
                 return;
             }
@@ -202,11 +208,11 @@ var isAdded = false;
 
         if (isEdited) {
             if (event.target.className === 'buttonApplyClass') {
-                alert('apply');
+                // alert('apply');
                 applyEditing(event.target.closest('tr'));
                 return;
             } else if (event.target.closest('.buttonApplyClass') !== null) {
-                alert('apply');
+                // alert('apply');
                 applyEditing(event.target.closest('tr'));
                 return;
             }
@@ -214,21 +220,21 @@ var isAdded = false;
 
         if (isAdded) {
             if (event.target.className === 'buttonApplyBackClass') {
-                alert('applyBack');
+                // alert('applyBack');
                 cancelAdd();
                 return;
             } else if (event.target.closest('.buttonApplyBackClass') !== null) {
-                alert('applyBack');
+                // alert('applyBack');
                 cancelAdd();
                 return;
             }
 
             if (event.target.className === 'buttonApplyAddClass') {
-                alert('applyAdd');
+                // alert('applyAdd');
                 applyAdding(event.target.closest('tr'));
                 return;
             } else if (event.target.closest('.buttonApplyAddClass') !== null) {
-                alert('applyAdd');
+                // alert('applyAdd');
                 applyAdding(event.target.closest('tr'));
                 return;
             }
@@ -237,7 +243,7 @@ var isAdded = false;
 
     function applyAllEventFunc() {
         synchroniseArrays();
-        // Отправка запроса на сервер
+        sendData();
     }
 
     function editEventFunc(tr) {
