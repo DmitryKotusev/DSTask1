@@ -31,7 +31,7 @@ namespace DSD.Controllers
                 while (reader.Read())
                 {
                     object jersey, birthday, weight, height;
-                    if(reader.IsDBNull(1))
+                    if (reader.IsDBNull(1))
                     {
                         jersey = null;
                     }
@@ -90,6 +90,81 @@ namespace DSD.Controllers
             ToAddItem[] toAdd = JsonConvert.DeserializeObject<ToAddItem[]>(Request.Form["toAdd"]);
             ToEditItem[] toEdit = JsonConvert.DeserializeObject<ToEditItem[]>(Request.Form["toEdit"]);
             ToDeleteItem[] toDelete = JsonConvert.DeserializeObject<ToDeleteItem[]>(Request.Form["toDelete"]);
+
+
+            using (SqlConnection connection = new SqlConnection("Server=DESKTOP-SKN9RR2;Database=CRITTERS;Trusted_Connection=True;"))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
+                {
+                    //Добавление
+                    for (int i = 0; i < toAdd.Length; i++)
+                    {
+                        SqlCommand cmd = connection.CreateCommand();
+                        cmd.Transaction = transaction;
+                        string commandString = "INSERT INTO roster(playerid, jersey, fname, sname," +
+                                "position, birthday, weight, height, birthcity, birthstate) " +
+                                "VALUES(@playerid, @jersey, @fname, @sname," +
+                                "@position, @birthday, @weight, @height, @birthcity, @birthstate)";
+                        cmd.CommandText = commandString;
+                        cmd.Parameters.AddWithValue("@playerid", toAdd[i].playerid);
+                        cmd.Parameters.AddWithValue("@jersey", toAdd[i].jersey);
+                        cmd.Parameters.AddWithValue("@fname", toAdd[i].fname);
+                        cmd.Parameters.AddWithValue("@sname", toAdd[i].sname);
+                        cmd.Parameters.AddWithValue("@position", toAdd[i].position);
+                        cmd.Parameters.AddWithValue("@birthday", toAdd[i].birthday);
+                        cmd.Parameters.AddWithValue("@weight", toAdd[i].weight);
+                        cmd.Parameters.AddWithValue("@height", toAdd[i].height);
+                        cmd.Parameters.AddWithValue("@birthcity", toAdd[i].birthcity);
+                        cmd.Parameters.AddWithValue("@birthstate", toAdd[i].birthstate);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Редактирование
+                    for (int i = 0; i < toEdit.Length; i++)
+                    {
+                        SqlCommand cmd = connection.CreateCommand();
+                        cmd.Transaction = transaction;
+                        string commandString = "UPDATE roster SET playerid = @playerid, jersey = @jersey, " +
+                            "fname = @fname, sname = @sname, position = @position, birthday = @birthday, " +
+                            "weight = @weight, height = @height, birthcity = @birthcity, birthstate = @birthstate " +
+                            "WHERE playerid = @oldId";
+                        cmd.CommandText = commandString;
+                        cmd.Parameters.AddWithValue("@playerid", toEdit[i].playerid);
+                        cmd.Parameters.AddWithValue("@jersey", toEdit[i].jersey);
+                        cmd.Parameters.AddWithValue("@fname", toEdit[i].fname);
+                        cmd.Parameters.AddWithValue("@sname", toEdit[i].sname);
+                        cmd.Parameters.AddWithValue("@position", toEdit[i].position);
+                        cmd.Parameters.AddWithValue("@birthday", toEdit[i].birthday);
+                        cmd.Parameters.AddWithValue("@weight", toEdit[i].weight);
+                        cmd.Parameters.AddWithValue("@height", toEdit[i].height);
+                        cmd.Parameters.AddWithValue("@birthcity", toEdit[i].birthcity);
+                        cmd.Parameters.AddWithValue("@birthstate", toEdit[i].birthstate);
+                        cmd.Parameters.AddWithValue("@oldId", toEdit[i].oldId);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Удаление
+                    for (int i = 0; i < toDelete.Length; i++)
+                    {
+                        SqlCommand cmd = connection.CreateCommand();
+                        cmd.Transaction = transaction;
+                        string commandString = "DELETE FROM roster WHERE playerid = @playerid";
+                        cmd.CommandText = commandString;
+                        cmd.Parameters.AddWithValue("@playerid", toDelete[i].playerid);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Response.StatusCode = 400;
+                }
+            }
         }
     }
 }
